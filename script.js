@@ -1,10 +1,13 @@
 let elements = {};
 let speedMode = 1; // 0: KMH, 1: MPH, 2: Knots
 
-// --- Audio System (Dikembalikan) ---
+// --- Audio System ---
 let audioOn = new Audio('on.mp3');
 let audioOff = new Audio('off.mp3');
 let audioSeatbelt = new Audio('seatbelt.mp3');
+
+// Mengaktifkan fitur loop agar suara berulang terus-menerus
+audioSeatbelt.loop = true;
 
 // State Tracking
 let isEngineOn = false;
@@ -17,6 +20,7 @@ let indicators = 0;
 function playAudio(audioObj) {
     audioObj.pause();
     audioObj.currentTime = 0;
+    // Pengecualian promise error pada browser/CEF
     audioObj.play().catch(e => console.log("Audio play error:", e));
 }
 
@@ -37,9 +41,14 @@ function setEngine(state) {
         if (state) {
             playAudio(audioOn);
             if (elements.statusEng) elements.statusEng.classList.add('active');
+            
+            // Jika mesin dinyalakan tapi seatbelt belum dipasang, langsung putar alarm
+            if (!isSeatbeltOn) {
+                playAudio(audioSeatbelt);
+            }
         } else {
             playAudio(audioOff);
-            stopAudio(audioSeatbelt); // Mematikan suara seatbelt jika mesin dimatikan
+            stopAudio(audioSeatbelt); // Matikan paksa alarm jika mesin dimatikan
             if (elements.statusEng) elements.statusEng.classList.remove('active');
         }
         isEngineOn = state;
@@ -67,7 +76,6 @@ function setSpeed(speed) {
             if(elements.unit) elements.unit.innerText = 'KPH';
     }
 
-    // Format menjadi 3 digit (misal: 048)
     let speedStr = speedVal.toString().padStart(3, '0');
     let firstDigit = speedStr.charAt(0);
     let restDigits = speedStr.substring(1);
@@ -75,7 +83,6 @@ function setSpeed(speed) {
     if (elements.speedDigit1) elements.speedDigit1.innerText = firstDigit;
     if (elements.speed) elements.speed.innerText = restDigits;
     
-    // Efek redup untuk angka nol di depan
     if (elements.speedDigit1) {
         if (firstDigit === '0') {
              elements.speedDigit1.classList.add('digit-dim');
@@ -94,7 +101,6 @@ function setRPM(rpm) {
     let percentage = Math.max(0, Math.min(1, rpm)) * 100;
     elements.rpmFill.style.width = percentage + '%';
     
-    // Efek Redline: Merah dan glow merah jika melebihi 85%
     if (percentage > 85) {
         elements.rpmFill.style.backgroundColor = '#ff3333';
         elements.rpmFill.style.boxShadow = '0 0 10px #ff3333';
@@ -113,7 +119,6 @@ function setFuel(fuel) {
     let percentage = Math.max(0, Math.min(1, fuel)) * 100;
     elements.fuelFill.style.width = percentage + '%';
     
-    // Efek Kritis: Merah dan glow merah jika bensin di bawah 15%
     if (percentage < 15) {
         elements.fuelFill.style.backgroundColor = '#ff3333';
         elements.fuelFill.style.boxShadow = '0 0 10px #ff3333';
@@ -132,7 +137,6 @@ function setHealth(health) {
     let percentage = Math.max(0, Math.min(1, health)) * 100;
     elements.healthFill.style.width = percentage + '%';
     
-    // Efek Kritis: Merah dan glow merah jika health di bawah 30%
     if (percentage < 30) {
         elements.healthFill.style.backgroundColor = '#ff3333';
         elements.healthFill.style.boxShadow = '0 0 10px #ff3333';
@@ -162,14 +166,11 @@ function setGear(gear) {
 function setHeadlights(state) {
     if (!elements.headlights) return;
     
-    // Hapus semua indikator aktif terlebih dahulu
     elements.headlights.classList.remove('active', 'active-blue');
     
     if (state === 1) {
-        // State 1: Lampu menyala (Hijau)
         elements.headlights.classList.add('active');
     } else if (state === 2) {
-        // State 2: Lampu Jauh / High Beam (Biru)
         elements.headlights.classList.add('active-blue');
     }
 }
@@ -204,11 +205,11 @@ function setSeatbelts(state) {
     if (state !== isSeatbeltOn) {
         isSeatbeltOn = state;
         if (state) {
-            // Seatbelt terpasang -> Ikon menyala, matikan suara alarm
+            // Seatbelt dipakai -> Ikon menyala, alarm (loop) berhenti
             if (elements.statusSbt) elements.statusSbt.classList.add('active'); 
             stopAudio(audioSeatbelt);
         } else {
-            // Seatbelt dilepas -> Ikon mati, nyalakan alarm jika mesin hidup
+            // Seatbelt dilepas -> Ikon redup, putar alarm (looping) jika mesin menyala
             if (elements.statusSbt) elements.statusSbt.classList.remove('active');
             if (isEngineOn) {
                 playAudio(audioSeatbelt);
@@ -232,10 +233,8 @@ function setSpeedMode(mode) {
 function setOdometer(distance) {
     if (!elements.odometer) return;
     
-    // Format odometer menjadi 8 digit (contoh: 00467.27)
     let distStr = distance.toFixed(2).padStart(8, '0');
     
-    // Sesuaikan akhiran satuan secara otomatis
     let unitLabel = (speedMode === 1) ? 'M' : 'KM'; 
     if (speedMode === 2) unitLabel = 'NM'; 
     
