@@ -4,7 +4,7 @@ let speedMode = 1; // 0: KMH, 1: MPH, 2: Knots
 // --- Audio System (Dikembalikan) ---
 let audioOn = new Audio('on.mp3');
 let audioOff = new Audio('off.mp3');
-// let audioSeatbelt = new Audio('seatbelt.mp3');
+let audioSeatbelt = new Audio('seatbelt.mp3');
 
 // State Tracking
 let isEngineOn = false;
@@ -39,7 +39,7 @@ function setEngine(state) {
             if (elements.statusEng) elements.statusEng.classList.add('active');
         } else {
             playAudio(audioOff);
-            // stopAudio(audioSeatbelt); // Mematikan suara seatbelt jika mesin dimatikan
+            stopAudio(audioSeatbelt); // Mematikan suara seatbelt jika mesin dimatikan
             if (elements.statusEng) elements.statusEng.classList.remove('active');
         }
         isEngineOn = state;
