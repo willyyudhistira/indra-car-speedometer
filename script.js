@@ -5,9 +5,11 @@ let speedMode = 1; // 0: KMH, 1: MPH, 2: Knots
 let audioOn = new Audio('on.mp3');
 let audioOff = new Audio('off.mp3');
 let audioSeatbelt = new Audio('seatbelt.mp3');
+let audioSeatOn = new Audio('seaton.mp3'); // Audio baru saat seatbelt dipasang
 
-// Mengaktifkan fitur loop agar suara berulang terus-menerus
+// Mengaktifkan fitur loop agar suara peringatan seatbelt berulang terus-menerus
 audioSeatbelt.loop = true;
+// audioSeatOn tidak menggunakan loop karena hanya diputar sekali
 
 // State Tracking (Pastikan default seatbelt adalah false / off)
 let isEngineOn = false;
@@ -201,14 +203,13 @@ function setRightIndicator(state) {
  * @param {boolean} state If true, indicates seatbelts are fastened.
  */
 function setSeatbelts(state) {
-    // Kita berikan izin untuk memproses ulang meskipun nilai state-nya sama 
-    // agar sinkronisasi awal dengan game berjalan sempurna.
     isSeatbeltOn = state;
 
     if (state) {
-        // Seatbelt dipakai (ON) -> Ikon menyala hijau, matikan suara alarm
+        // Seatbelt dipakai (ON) -> Ikon menyala hijau, matikan suara alarm loop, dan putar seaton.mp3 sekali
         if (elements.statusSbt) elements.statusSbt.classList.add('active'); 
         stopAudio(audioSeatbelt);
+        playAudio(audioSeatOn); // Memutar suara status on sekali
     } else {
         // Seatbelt dilepas (OFF) -> Ikon redup, nyalakan alarm loop jika mesin hidup
         if (elements.statusSbt) elements.statusSbt.classList.remove('active');
