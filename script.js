@@ -9,9 +9,9 @@ let audioSeatbelt = new Audio('seatbelt.mp3');
 // Mengaktifkan fitur loop agar suara berulang terus-menerus
 audioSeatbelt.loop = true;
 
-// State Tracking
+// State Tracking (Pastikan default seatbelt adalah false / off)
 let isEngineOn = false;
-let isSeatbeltOn = false;
+let isSeatbeltOn = false; 
 let indicators = 0;
 
 /**
@@ -20,7 +20,6 @@ let indicators = 0;
 function playAudio(audioObj) {
     audioObj.pause();
     audioObj.currentTime = 0;
-    // Pengecualian promise error pada browser/CEF
     audioObj.play().catch(e => console.log("Audio play error:", e));
 }
 
@@ -42,7 +41,7 @@ function setEngine(state) {
             playAudio(audioOn);
             if (elements.statusEng) elements.statusEng.classList.add('active');
             
-            // Jika mesin dinyalakan tapi seatbelt belum dipasang, langsung putar alarm
+            // Karena default seatbelt off, langsung bunyikan alarm saat mesin nyala
             if (!isSeatbeltOn) {
                 playAudio(audioSeatbelt);
             }
@@ -202,18 +201,19 @@ function setRightIndicator(state) {
  * @param {boolean} state If true, indicates seatbelts are fastened.
  */
 function setSeatbelts(state) {
-    if (state !== isSeatbeltOn) {
-        isSeatbeltOn = state;
-        if (state) {
-            // Seatbelt dipakai -> Ikon menyala, alarm (loop) berhenti
-            if (elements.statusSbt) elements.statusSbt.classList.add('active'); 
-            stopAudio(audioSeatbelt);
-        } else {
-            // Seatbelt dilepas -> Ikon redup, putar alarm (looping) jika mesin menyala
-            if (elements.statusSbt) elements.statusSbt.classList.remove('active');
-            if (isEngineOn) {
-                playAudio(audioSeatbelt);
-            }
+    // Kita berikan izin untuk memproses ulang meskipun nilai state-nya sama 
+    // agar sinkronisasi awal dengan game berjalan sempurna.
+    isSeatbeltOn = state;
+
+    if (state) {
+        // Seatbelt dipakai (ON) -> Ikon menyala hijau, matikan suara alarm
+        if (elements.statusSbt) elements.statusSbt.classList.add('active'); 
+        stopAudio(audioSeatbelt);
+    } else {
+        // Seatbelt dilepas (OFF) -> Ikon redup, nyalakan alarm loop jika mesin hidup
+        if (elements.statusSbt) elements.statusSbt.classList.remove('active');
+        if (isEngineOn) {
+            playAudio(audioSeatbelt);
         }
     }
 }
@@ -234,7 +234,6 @@ function setOdometer(distance) {
     if (!elements.odometer) return;
     
     let distStr = distance.toFixed(2).padStart(8, '0');
-    
     let unitLabel = (speedMode === 1) ? 'M' : 'KM'; 
     if (speedMode === 2) unitLabel = 'NM'; 
     
@@ -258,4 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
         healthFill: document.getElementById('health-fill'),
         odometer: document.getElementById('odometer'),
     };
+
+    // Pastikan status awal seatbelt tersetting ke false secara aman
+    setSeatbelts(false);
 });
