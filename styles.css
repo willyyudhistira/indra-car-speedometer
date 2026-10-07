@@ -1,0 +1,208 @@
+@font-face {
+    font-family: 'Digit';
+    src: url('Digit.TTF') format('truetype');
+}
+
+* {
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-drag: none;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: transparent !important; 
+    font-family: 'Digit', sans-serif;
+    color: #ffffff;
+    overflow: hidden;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.digital-hud {
+    position: fixed;
+    bottom: 50px; 
+    right: 50px;
+    
+    display: flex;
+    flex-direction: column;
+    gap: 4px; 
+    width: 290px; 
+    
+    transform-origin: right center; 
+    transform: perspective(500px) rotateY(-22deg) rotateX(2deg) skewX(-10deg);
+    transform-style: preserve-3d;
+    
+    text-shadow: 
+        0px 0px 8px rgba(0, 0, 0, 1),
+        0px 0px 15px rgba(0, 0, 0, 0.8),
+        0px 0px 25px rgba(0, 0, 0, 0.6);
+}
+
+.hud-row {
+    display: flex;
+    width: 100%;
+}
+
+/* --- SEKSI ATAS --- */
+.top-section {
+    justify-content: flex-start;
+    align-items: center;
+    gap: 16px; 
+}
+
+.speed-container {
+    display: flex;
+    align-items: baseline;
+    font-size: 6rem;
+    line-height: 0.72; 
+    letter-spacing: 3px;
+    
+    text-shadow: 
+        0 0 15px rgba(255, 255, 255, 0.7),
+        0 0 25px rgba(255, 255, 255, 0.4),
+        0px 0px 8px rgba(0, 0, 0, 1);
+}
+
+.digit-dim {
+    opacity: 0.4; 
+}
+
+.top-right-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0px; 
+}
+
+.gear-container {
+    display: flex;
+    align-items: baseline;
+    gap: 6px; 
+    
+    color: #00ff00;
+    text-shadow: 
+        0 0 10px #00ff00,
+        0 0 20px rgba(0, 255, 0, 0.5),
+        0px 0px 8px rgba(0, 0, 0, 1);
+}
+
+.gear-container .label {
+    font-size: 2rem;
+}
+
+.gear-container .val {
+    font-size: 2.5rem;
+}
+
+.unit-container {
+    font-size: 2rem;
+    letter-spacing: 2px;
+}
+
+/* --- SEKSI TENGAH (Odometer & Ikon) --- */
+.middle-section {
+    justify-content: space-between;
+    align-items: center;
+    margin-top: -2px; 
+}
+
+.odometer-text {
+    font-size: 1rem;
+    opacity: 0.8;
+    letter-spacing: 1px;
+}
+
+.indicators-container {
+    display: flex;
+    align-items: center;
+    gap: 12px; 
+}
+
+.digital-text {
+    font-size: 2.2rem;
+    padding-bottom: 5px; 
+}
+
+.icon-status {
+    font-family: 'Material Symbols Rounded', sans-serif !important;
+    font-style: normal !important; 
+    font-size: 1.8rem;
+    color: #ffffff;
+    opacity: 0.3;
+    transition: all 0.3s ease;
+    
+    transform: skewX(10deg);
+}
+
+.indicator {
+    color: #ffffff;
+    opacity: 0.3;
+    transition: all 0.3s ease;
+}
+
+.active {
+    color: #00ff00 !important; 
+    opacity: 1 !important;
+    text-shadow: 
+        0 0 10px #00ff00, 
+        0 0 20px rgba(0, 255, 0, 0.6),
+        0 0 30px rgba(0, 255, 0, 0.3),
+        0px 0px 8px rgba(0, 0, 0, 1) !important;
+}
+
+/* WARNA BIRU KHUSUS UNTUK LAMPU JAUH (HIGH BEAM) */
+.active-blue {
+    color: #00aaff !important; 
+    opacity: 1 !important;
+    text-shadow: 
+        0 0 10px #00aaff, 
+        0 0 20px rgba(0, 170, 255, 0.6),
+        0 0 30px rgba(0, 170, 255, 0.3),
+        0px 0px 8px rgba(0, 0, 0, 1) !important;
+}
+
+/* --- SEKSI BARS --- */
+.bars-container {
+    display: flex;
+    flex-direction: column;
+    gap: 4px; 
+    margin-top: 0px;
+}
+
+.bar-row {
+    display: flex;
+    align-items: center;
+    gap: 24px; 
+}
+
+.bar-label {
+    font-size: 1.2rem;
+    width: 50px; 
+    text-align: left;
+    letter-spacing: 1px;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.4), 0px 0px 8px rgba(0, 0, 0, 1);
+}
+
+.bar-wrapper {
+    flex-grow: 1;
+    height: 3px; 
+    background-color: rgba(0, 0, 0, 0.7); 
+    border-radius: 2px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.9);
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    width: 0%; 
+    transition: width 0.2s ease-out, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.rpm { background-color: #ffffff; box-shadow: 0 0 8px #ffffff; }
+.fuel { background-color: #ffaa00; box-shadow: 0 0 8px #ffaa00; }
+.health { background-color: #00ffaa; box-shadow: 0 0 8px #00ffaa; }

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital HUD Speedometer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,600,0,0" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main class="digital-hud">
+        
+        <!-- Baris Atas: Kecepatan, Gear, dan Unit (MPH/KPH) -->
+        <div class="hud-row top-section">
+            <div class="speed-container">
+                <span id="speed-digit-1" class="speed-val digit-dim">0</span>
+                <span id="speed" class="speed-val">48</span>
+            </div>
+            <div class="top-right-info">
+                <div class="gear-container">
+                    <span class="label">GEAR</span>
+                    <span id="gear" class="val">1</span>
+                </div>
+                <div class="unit-container">
+                    <span id="unit">MPH</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Baris Tengah: Odometer (Kiri) & Ikon Indikator (Kanan) -->
+        <div class="hud-row middle-section">          
+            <div class="indicators-container">
+                <span id="ind-left" class="indicator digital-text">&lt;</span>
+                <!-- Ikon Headlights ditambahkan di sini -->
+                <span id="status-headlights" class="material-symbols-rounded icon-status">lightbulb</span>
+                <span id="status-eng" class="material-symbols-rounded icon-status">power_settings_new</span>
+                <span id="status-sbt" class="material-symbols-rounded icon-status">airline_seat_recline_normal</span>
+                <span id="ind-right" class="indicator digital-text">&gt;</span>
+            </div>
+            <span id="odometer" class="odometer-text">00467.27 M</span>
+        </div>
+
+        <!-- Baris Indikator (RPM, Fuel, Health) -->
+        <div class="bars-container">
+            <div class="bar-row">
+                <span class="bar-label">RPM</span>
+                <div class="bar-wrapper">
+                    <div id="rpm-fill" class="bar-fill rpm"></div>
+                </div>
+            </div>
+            <div class="bar-row">
+                <span class="bar-label">FUEL</span>
+                <div class="bar-wrapper">
+                    <div id="fuel-fill" class="bar-fill fuel"></div>
+                </div>
+            </div>
+            <div class="bar-row">
+                <span class="bar-label">HEALTH</span>
+                <div class="bar-wrapper">
+                    <div id="health-fill" class="bar-fill health"></div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
